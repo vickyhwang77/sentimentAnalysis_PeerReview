@@ -109,7 +109,7 @@ def extract_assessment():
 
     df = pd.DataFrame(data)
     
-    df.to_csv("/Users/vickyhwang/delt4/quantify knowledge/scrapers/f1000.csv", index=False)
+    df.to_csv("f1000.csv", index=False)
 
 
 

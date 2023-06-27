@@ -25,9 +25,12 @@ def extract_assessment(topic, num_pages, rating):
     titles = []
     assessments = []
     scores = []
+    ratings = []
+    page_no = 0
+    paper_no = 0
 
     for page in range(1, num_pages+1):
-
+        
         result = requests.get(url)
         # create BeautifulSoup object to parse html content of webpage
         soup = BeautifulSoup(result.content, "html.parser")
@@ -38,9 +41,12 @@ def extract_assessment(topic, num_pages, rating):
         papers_list = soup.find("ol", class_="listing-list")
         # Get all the papers in the list.
         papers = papers_list.find_all("li", class_="listing-list__item")
-    
+        page_no += 1
+        print("Page:", page_no)
         # For each paper, get it's link:
         for paper in papers:
+
+            paper_no += 1
 
             paper_link = paper.find("a", class_ ="teaser__header_text_link")
             paper_link_url = base_url + paper_link["href"]
@@ -67,28 +73,48 @@ def extract_assessment(topic, num_pages, rating):
 
                 # Keep only the papers whose scores that match the given score
                 paper_score = simpleAnalysis(paragraph)
+                paper_rating = giveRating(paper_score)
 
-                if rating == "Poor" and paper_score < 0:
+                if rating == 'Any':
                     if topic == "Any" or topic == paper_topic.text.strip():
                         topics.append(paper_topic.text.strip())
                         titles.append(paper_title.text.strip())
                         assessments.append(paragraph)
                         scores.append(paper_score)
-                    
-                elif rating == "Mediocre" and 0 <= paper_score < 1:
+                        ratings.append(paper_rating)
+
+                elif rating == "Doubtful" and paper_score < -0.5:
                     if topic == "Any" or topic == paper_topic.text.strip():
                         topics.append(paper_topic.text.strip())
                         titles.append(paper_title.text.strip())
                         assessments.append(paragraph)
                         scores.append(paper_score)
-                    
-                elif rating == "Good" and paper_score == 1:
+                        ratings.append(paper_rating)
+
+                elif rating == "Useful" and -0.5 <= paper_score < 0:
                     if topic == "Any" or topic == paper_topic.text.strip():
                         topics.append(paper_topic.text.strip())
                         titles.append(paper_title.text.strip())
                         assessments.append(paragraph)
                         scores.append(paper_score)
+                        ratings.append(paper_rating)
                     
+                elif rating == "Good" and 0 <= paper_score < 1:
+                    if topic == "Any" or topic == paper_topic.text.strip():
+                        topics.append(paper_topic.text.strip())
+                        titles.append(paper_title.text.strip())
+                        assessments.append(paragraph)
+                        scores.append(paper_score)
+                        ratings.append(paper_rating)
+                    
+                elif rating == "Excellent" and paper_score == 1:
+                    if topic == "Any" or topic == paper_topic.text.strip():
+                        topics.append(paper_topic.text.strip())
+                        titles.append(paper_title.text.strip())
+                        assessments.append(paragraph)
+                        scores.append(paper_score)
+                        ratings.append(paper_rating)
+                
                 else:
                     continue
     
@@ -103,10 +129,12 @@ def extract_assessment(topic, num_pages, rating):
             url = new_url
 
     # Create Database
-    df = pd.DataFrame({"Topic": topics, "Title": titles, "Assessment": assessments, "Score": scores}) 
+    df = pd.DataFrame({"Topic":topics, "Title":titles, "Rating":ratings, "Assessment":assessments, "Score":scores}) 
     print(df)
  
     df.to_csv("eLife.csv", index=False)  # Save Data to CSV file
+
+    print(paper_no)
 
 def simpleAnalysis(paragraph):
 
@@ -116,8 +144,8 @@ def simpleAnalysis(paragraph):
     pos_words = ["valuable", "convincing"]      # 0.25
     neu_words = ["useful", "solid"]             # 0
     neg_words = ["partially supported", "further strengthened", "require additional"] # -0.25
-    bad_words = ["inadequate"]                # - 0.75
-    worst_words = ["incomplete"]                # - 1
+    bad_words = ["inadequate"]                # -0.5
+    worst_words = ["incomplete"]                # -1
 
     num_best = 0
     num_great = 0
@@ -136,7 +164,6 @@ def simpleAnalysis(paragraph):
     tokens = word_tokenize(paragraph)
     n = 2  # Change this to the desired n-gram size
     ngrams_list = list(ngrams(tokens, n))
-
 
     # Check words:
     for word in tokens:
@@ -167,17 +194,29 @@ def simpleAnalysis(paragraph):
 
      
     meaningful_words = num_best+num_great+num_good+num_pos+num_neu+num_neg+num_bad+num_worst
-    score = ((num_best)+(0.75*num_great)+(0.5*num_good)+(0.25*num_pos)+(0*num_neu)+(-0.25*num_neg)+(-0.75*num_bad)+(-1*num_worst)) / meaningful_words
-    print(score)
-
+    score = ((num_best)+(0.75*num_great)+(0.5*num_good)+(0.25*num_pos)+\
+             (0*num_neu)+(-0.25*num_neg)+(-0.5*num_bad)+(-1*num_worst)) / meaningful_words
+    
     return score
 
+def giveRating(paper_score):       # a simple method to convert numerical rating into description
+    rating = ""
+
+    if paper_score < -0.5:
+        rating = "Doubtful"
+    elif -0.5 <= paper_score < 0:
+        rating = "Useful"
+    elif 0 <= paper_score < 1:
+        rating = "Good"
+    elif paper_score == 1:
+        rating = "Excellent"
+    
+    return rating 
+        
     
 def main():
     #format: extract_assessment("Topic, number pages to search, paper rating")
-
-    extract_assessment("Any", 2, "Good")
-
+    extract_assessment("Any", 29, "Any")
 if __name__ == "__main__":
     main()
 
