@@ -47,6 +47,7 @@ def extract_assessment(num_pages):
             # Each paper may have more than one review:
             review_texts = []
             review_columns = []
+            mega_review = []
             # and also an accompanying decision: Yes, Maybe, No:  
             num_reviews = 0 
             num_approved = 0
@@ -106,9 +107,9 @@ def extract_assessment(num_pages):
 
                         #print("Decision: " + decision.text + "\n")
 
-
-                        
                         review_texts.append(paragraph.text)
+                        mega_review.append(paragraph.text)
+
                         print(paragraph.text)
                         print("\n")
                     
@@ -116,26 +117,18 @@ def extract_assessment(num_pages):
                         # To handle possible multiple reviews
                         review_columns.append(f"Review {num_texts}")
 
-
-                print(num_texts)
-
                 reviewer_score = (num_approved + (0*num_maybe) + (-1*num_disproved)) / num_reviews
                 scores.append(reviewer_score)
-
-                
-
 
                 data.append({
                     "Title": paper_title.text.strip(),
                     "Reviewer Score": reviewer_score,
+                    "Mega-Review": ' '.join(mega_review),
                     **dict(zip(review_columns, review_texts)),
                 })
            
             new_url = base_url2 + "page=" + str(page)     # page numbering begins on page 2
             url = new_url
-
-        
-            
 
     df = pd.DataFrame(data)
     
@@ -144,7 +137,7 @@ def extract_assessment(num_pages):
 
 
 def main():
-    extract_assessment(1)
+    extract_assessment(5)
 
 if __name__ == "__main__":
     main()
