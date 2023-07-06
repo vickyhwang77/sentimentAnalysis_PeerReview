@@ -26,7 +26,7 @@ def extract_assessment(num_pages):
   
     titles = []
     review_columns = []
-    review_texts = []
+    
     data = []
    
 
@@ -137,7 +137,7 @@ def extract_assessment(num_pages):
 
 
 def main():
-    extract_assessment(5)
+    extract_assessment(13)
 
 if __name__ == "__main__":
     main()
