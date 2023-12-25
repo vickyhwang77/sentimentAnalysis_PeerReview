@@ -8,7 +8,7 @@ Before running the script, make sure to install the following dependencies:
 - Pandas: ```pip install pandas```
 - NLTK: ```pip install nltk```
 
-# How to run
+# How to run the eLife Scraper
 1. Clone the repository: ``````
 2. Navigate to the project directory
 3. Install the dependencies above
@@ -16,7 +16,5 @@ Before running the script, make sure to install the following dependencies:
    - ```topic```: specify the topic of interest (topics can be found by going to elifesciences.org)
    - ```num_pages```: specify the number of pages to search through
    - ```rating```: filter by the desired rating ("Any", "Doubtful", "Useful", "Good", "Excellent")
-
-# Output
-The script outputs a CSV file named eLife.csv containing the extracted data with columns: "Topic," "Title," "Rating," "Assessment," and "Score." 
+5. The script outputs a CSV file named eLife.csv containing the extracted data with columns: "Topic," "Title," "Rating," "Assessment," and "Score." 
 
