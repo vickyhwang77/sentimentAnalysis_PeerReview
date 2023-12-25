@@ -1,5 +1,5 @@
 # Introduction
-This script performs sentiment analysis on peer reviews of eLife's and F1000's published preprints. The goal is to calculate sentiment scores from the extracted texts. The sentiment scores are based on a custom analysis that categorizes words and phrases into different levels of positivity and negativity.
+This script performs sentiment analysis on peer reviews of eLife's and F1000's published preprints. The goal is to calculate sentiment scores from the extracted texts. The sentiment scores for eLife are based on a custom analysis that categorizes words and phrases into different levels of positivity and negativity. For F1000, a prediction is generated based on reviewer decisions such as "Approved," "Approved With Reservations," and other possible outcomes.
 
 # Dependencies
 Before running the script, make sure to install the following dependencies: 
@@ -8,13 +8,22 @@ Before running the script, make sure to install the following dependencies:
 - Pandas: ```pip install pandas```
 - NLTK: ```pip install nltk```
 
-# How to run the eLife Scraper
-1. Clone the repository: ``````
+# How to run the Scrapers
+1. Clone the repository: 
 2. Navigate to the project directory
 3. Install the dependencies above
 4. Modify the main() function with your specific requirements:
-   - ```topic```: specify the topic of interest (topics can be found by going to elifesciences.org)
-   - ```num_pages```: specify the number of pages to search through
-   - ```rating```: filter by the desired rating ("Any", "Doubtful", "Useful", "Good", "Excellent")
-5. The script outputs a CSV file named eLife.csv containing the extracted data with columns: "Topic," "Title," "Rating," "Assessment," and "Score." 
+   - For eLife:
+      - ```topic```: specify the topic of interest (topics can be found by going to elifesciences.org)
+      - ```num_pages```: specify the number of pages to search through
+      - ```rating```: filter by the desired rating ("Any", "Doubtful", "Useful", "Good", "Excellent")
+   - For F1000:
+      - ```num_pages```: specify the number of pages to search through
+5. Output:
+   - The elife script outputs a CSV file named eLife.csv containing the extracted data with columns: "Topic," "Title,"       "Rating," "Assessment," and "Score."
+  
+   - The F1000 script outputs a CSV file named f1000.csv containing the extracted data with columns: "Title," "Reviewer Score," and "Mega-Review." Additionally, individual reviews are included as separate columns (e.g., "Review 1," "Review 2," etc.).
+  
+# 
+
 
