@@ -24,6 +24,7 @@ Before running the script, make sure to install the following dependencies:
   
    - The F1000 script outputs a CSV file named f1000.csv containing the extracted data with columns: "Title," "Reviewer Score," and "Mega-Review." Additionally, individual reviews are included as separate columns (e.g., "Review 1," "Review 2," etc.).
   
-# 
+# Further Sentiment Analysis
+The F1000 texts can be use to fine-tune a pre-trained Sentiment Analysis Model. Here is a link to a colab notebook which uses distilBERT as the model, but any variation of BERT can be used: https://colab.research.google.com/drive/116tjoA9ZCcx9bEJ7zIBegmiD96jwbGxE?usp=sharing
 
 
